@@ -1,0 +1,22 @@
+# Launch-free action fragment: type a message, send it, and confirm it landed.
+# Precondition/repeat building block for this spec's flows (composed via runFlow).
+# It carries a config section (appId + ---) because Maestro requires one on every
+# flow file, but NO launchApp — the composing top-level flow owns the launch.
+#
+# Params:
+#   MESSAGE_TEXT — the text to type and send.
+appId: org.jetbrains.Chat
+---
+- tapOn:
+    id: "chat_message_input"
+- inputText: "${MESSAGE_TEXT}"
+# The send button only renders once the input is non-empty (spec story 2),
+# so assert it appeared before tapping.
+- assertVisible:
+    id: "chat_send_button"
+- tapOn:
+    id: "chat_send_button"
+# Confirm the message landed. The app pins the newest message to the bottom of the
+# list, so it is visible right after sending — assert here, immediately, while it is
+# the newest (before the live friend feed can append and scroll it away).
+- assertVisible: "${MESSAGE_TEXT}"

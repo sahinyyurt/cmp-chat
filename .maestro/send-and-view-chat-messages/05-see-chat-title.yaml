@@ -1,0 +1,8 @@
+# Spec story 5 (journey): the conversation's title is visible at the top on launch.
+appId: org.jetbrains.Chat
+---
+- launchApp:
+    clearState: true
+
+# The TopAppBar title. Static, deterministic — asserted by text.
+- assertVisible: "The Composers Chat"

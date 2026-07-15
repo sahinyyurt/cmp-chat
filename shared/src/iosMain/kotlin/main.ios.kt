@@ -12,7 +12,7 @@ fun ChatViewController(): UIViewController = ComposeUIViewController {
 }
 
 fun sendMessage(text: String) {
-    store.send(Action.SendMessage(Message(myUser, text)))
+    store.send(Action.SendMessage(Message(myUser, text, MessageStatus.Sending)))
 }
 
 fun gradient3Colors() = ChatColors.GRADIENT_3

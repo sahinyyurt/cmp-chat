@@ -85,7 +85,7 @@ fun ChatApp(
                         SendMessage { text ->
                             store.send(
                                 Action.SendMessage(
-                                    Message(myUser, text)
+                                    Message(myUser, text, MessageStatus.Sending)
                                 )
                             )
                         }

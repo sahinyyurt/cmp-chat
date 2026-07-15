@@ -5,20 +5,25 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import kotlin.random.Random
 import kotlin.random.nextInt
 
+enum class MessageStatus { Sending, Sent }
+
 data class Message(
     val user: User,
     val text: String,
     val seconds: Long,
-    val id: Long
+    val id: Long,
+    val status: MessageStatus = MessageStatus.Sent
 ) {
     constructor(
         user: User,
-        text: String
+        text: String,
+        status: MessageStatus = MessageStatus.Sent
     ) : this(
         user = user,
         text = text,
         seconds = Clock.System.now().epochSeconds,
-        id = Random.nextLong()
+        id = Random.nextLong(),
+        status = status
     )
 }
 

@@ -5,11 +5,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,6 +24,8 @@ import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Density
@@ -36,6 +42,42 @@ fun Triangle(risingToTheRight: Boolean, background: Color) {
             .background(background)
             .size(6.dp)
     )
+}
+
+// Delivery indicator for my own messages: one check while Sending, two
+// overlapping checks once Sent. No `DoneAll` glyph in material-icons-core, so
+// the double tick is drawn as two offset `Check` icons.
+@Composable
+fun MessageStatusTicks(status: MessageStatus) {
+    val tickColor = ChatColors.TIME_TEXT
+    val tickSize = 12.dp
+    val overlap = 4.dp
+    // E2E: the ticks are icons with no text, so expose delivery status to Maestro
+    // via a stable testTag plus an accessibility description that reflects the
+    // runtime state ("Sending" → "Delivered"). Per D1 the tag itself stays static;
+    // the changing state lives in contentDescription, not in the tag.
+    val statusLabel = if (status == MessageStatus.Sent) "Delivered" else "Sending"
+    Box(
+        Modifier
+            .size(width = tickSize + overlap, height = tickSize)
+            .testTag("chat_messagestatus_image")
+            .semantics { contentDescription = statusLabel }
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Check,
+            contentDescription = null,
+            tint = tickColor,
+            modifier = Modifier.size(tickSize).align(Alignment.CenterStart)
+        )
+        if (status == MessageStatus.Sent) {
+            Icon(
+                imageVector = Icons.Filled.Check,
+                contentDescription = null,
+                tint = tickColor,
+                modifier = Modifier.size(tickSize).align(Alignment.CenterStart).offset(x = overlap)
+            )
+        }
+    }
 }
 
 @Composable
@@ -94,6 +136,7 @@ fun ChatMessage(isMyMessage: Boolean, message: Message) {
                         Spacer(Modifier.size(4.dp))
                         Row(
                             horizontalArrangement = Arrangement.End,
+                            verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.align(Alignment.End)
                         ) {
                             Text(
@@ -102,6 +145,10 @@ fun ChatMessage(isMyMessage: Boolean, message: Message) {
                                 style = MaterialTheme.typography.subtitle1.copy(fontSize = 10.sp),
                                 color = ChatColors.TIME_TEXT
                             )
+                            if (isMyMessage) {
+                                Spacer(Modifier.size(3.dp))
+                                MessageStatusTicks(message.status)
+                            }
                         }
                     }
                 }

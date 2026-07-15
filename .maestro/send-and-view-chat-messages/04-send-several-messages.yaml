@@ -1,0 +1,26 @@
+# Spec story 4 (journey): send several messages one after another and see them all,
+# in order. Reuses the self-verifying send-a-message subflow (repeat ≥2) with
+# distinct env text; each call sends and asserts its own message as it lands.
+#
+# Why not assert all three visible together at the end: the screen auto-scrolls to
+# the newest message and a live friend feed keeps appending, so earlier messages are
+# pushed above the fold and out of the (lazily composed) view — a simultaneous or
+# historical list assertion is non-deterministic here. Verifying each message as it
+# is sent, in order, is the deterministic observable postcondition for this journey.
+appId: org.jetbrains.Chat
+---
+- launchApp:
+    clearState: true
+
+- runFlow:
+    file: subflows/send-a-message.yaml
+    env:
+      MESSAGE_TEXT: "First acceptance line"
+- runFlow:
+    file: subflows/send-a-message.yaml
+    env:
+      MESSAGE_TEXT: "Second acceptance line"
+- runFlow:
+    file: subflows/send-a-message.yaml
+    env:
+      MESSAGE_TEXT: "Third acceptance line"

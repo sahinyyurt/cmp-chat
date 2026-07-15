@@ -1,0 +1,37 @@
+# Spec story 1 (journey): type a message and send it, so it appears in the conversation.
+# Folds in story 2 (Send button appears only after typing) and story 3 (input clears
+# after send) as assertions — both are sub-behaviours of the send journey.
+# appId is org.jetbrains.Chat (capital C — the applicationId, not the namespace).
+appId: org.jetbrains.Chat
+---
+- launchApp:
+    clearState: true
+
+# The input is present on launch.
+- assertVisible:
+    id: "chat_message_input"
+
+# Story 2 (folded): with an empty input, the Send button is not rendered yet.
+- assertNotVisible:
+    id: "chat_send_button"
+
+# Story 1: type a unique, flow-authored message. Unique so it never collides with
+# the app's non-deterministic friend feed (a new friend message every ~5s).
+- tapOn:
+    id: "chat_message_input"
+- inputText: "Acceptance ping alpha"
+
+# Story 2 (folded): once text is present, the Send button appears — assert then tap.
+- assertVisible:
+    id: "chat_send_button"
+- tapOn:
+    id: "chat_send_button"
+
+# Story 1 postcondition: the sent message appears in the conversation.
+# Chat messages are identified by their text, not a tag.
+- assertVisible: "Acceptance ping alpha"
+
+# Story 3 (folded): the input cleared after sending — empty input means the
+# conditional Send button is gone again.
+- assertNotVisible:
+    id: "chat_send_button"

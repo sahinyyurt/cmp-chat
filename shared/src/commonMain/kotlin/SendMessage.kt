@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -28,7 +29,8 @@ fun SendMessage(sendMessage: (String) -> Unit) {
     TextField(
         modifier = Modifier.fillMaxWidth()
             .background(MaterialTheme.colors.background)
-            .padding(10.dp),
+            .padding(10.dp)
+            .testTag("chat_message_input"),
         colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White),
         value = inputText,
         placeholder = {
@@ -46,7 +48,8 @@ fun SendMessage(sendMessage: (String) -> Unit) {
                             inputText = ""
                         }
                         .pointerHoverIcon(PointerIcon.Hand)
-                        .padding(10.dp),
+                        .padding(10.dp)
+                        .testTag("chat_send_button"),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Icon(

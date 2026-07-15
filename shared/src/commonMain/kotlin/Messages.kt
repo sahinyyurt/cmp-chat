@@ -19,6 +19,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
@@ -35,7 +36,8 @@ internal fun Messages(
         }
     }
     LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(start = 4.dp, end = 4.dp),
+        modifier = Modifier.fillMaxSize().padding(start = 4.dp, end = 4.dp)
+            .testTag("chat_message_list"),
         contentPadding = contentPadding,
         verticalArrangement = Arrangement.spacedBy(8.dp),
         state = listState,

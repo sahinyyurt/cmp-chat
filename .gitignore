@@ -2,6 +2,7 @@ local.properties
 .idea
 iosApp/Podfile.lock
 iosApp/Pods/*
+iosApp/DerivedData/*
 iosApp/iosApp.xcworkspace/*
 iosApp/iosApp.xcodeproj/*
 !iosApp/iosApp.xcodeproj/project.pbxproj
@@ -26,3 +27,9 @@ build/
 # yarn.lock # but absent yarn.lock leads to inconsistent builds on CI, so let's keep it
 
 .codegraph
+
+# Maestro E2E: local screen recordings (delivered via GitHub release, not git)
+recordings/
+# Installed reference skills (dev-local; installed via `skills add`)
+.agents/
+skills-lock.json

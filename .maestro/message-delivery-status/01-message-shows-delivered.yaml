@@ -1,0 +1,37 @@
+# Spec: message delivery status. A message I send transitions from "Sending"
+# (single tick) to "Delivered" (double tick) after a simulated ~600ms network
+# delay (Store.SENT_DELAY_MS). The indicator is `chat_messagestatus_image`; its
+# accessibility description carries the runtime state, so the delivered state is
+# asserted by that text ("Delivered").
+#
+# One flow file serves both platforms: the send controls select by the same id
+# (Android Compose testTag / iOS native accessibilityIdentifier), and the Compose
+# message list + its semantics are Maestro-visible on iOS (see issue #12).
+#
+# appId is org.jetbrains.Chat (capital C — the applicationId, not the namespace).
+appId: org.jetbrains.Chat
+---
+- launchApp:
+    clearState: true
+
+# Send a unique, flow-authored message. Unique so it never collides with the
+# app's non-deterministic friend feed (a new friend message every ~5s).
+- tapOn:
+    id: "chat_message_input"
+- inputText: "Delivery check alpha"
+
+# The send button only renders once the input is non-empty, so assert then tap.
+- assertVisible:
+    id: "chat_send_button"
+- tapOn:
+    id: "chat_send_button"
+
+# The message lands in the conversation (identified by its text, not a tag)...
+- assertVisible: "Delivery check alpha"
+
+# ...and its delivery indicator reaches the "Delivered" (double-tick) state after
+# the simulated network delay. Deterministic: a sent message is inserted as
+# Sending and only flips to Sent via MarkSent, so Maestro polls until it appears.
+# Friends' incoming messages never carry this indicator (it renders only for my
+# own messages), so "Delivered" is unambiguous here.
+- assertVisible: "Delivered"
